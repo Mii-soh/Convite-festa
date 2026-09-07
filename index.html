@@ -14,7 +14,7 @@
     }
 
     body {
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: Georgia, "Times New Roman", serif;
       min-height: 100vh;
       background: #fff9df;
       color: #5f4b18;
@@ -78,9 +78,7 @@
       font-size: 17px;
       font-weight: bold;
       cursor: pointer;
-      text-decoration: none;
       margin-top: 15px;
-      transition: 0.2s;
     }
 
     .botao:hover {
@@ -92,6 +90,24 @@
       margin-top: 25px;
       font-size: 14px;
       opacity: 0.75;
+    }
+
+    .mensagem {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      background: #fff5c7;
+      border-radius: 18px;
+      line-height: 1.6;
+    }
+
+    .mensagem h2 {
+      color: #c79b18;
+      margin-bottom: 10px;
+    }
+
+    .erro {
+      color: #9b5b00;
     }
   </style>
 </head>
@@ -122,9 +138,14 @@
       </div>
     </div>
 
-    <button class="botao" onclick="confirmar()">
+    <button class="botao" id="botaoConfirmar" onclick="confirmar()">
       Confirmar presença 💛
     </button>
+
+    <div class="mensagem" id="mensagem">
+      <h2 id="tituloMensagem"></h2>
+      <p id="textoMensagem"></p>
+    </div>
 
     <p class="rodape">
       Será um dia muito especial e quero você comigo! 🌻
@@ -133,18 +154,39 @@
   </main>
 
   <script>
-    const SUPABASE_URL = "https://uagltrjwjmjcpkadnvfi.supabase.co";
+    const SUPABASE_URL =
+      "https://uagltrjwjmjcpkadnvfi.supabase.co";
 
-    const SUPABASE_KEY = "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-";
+    const SUPABASE_KEY =
+      "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-";
 
-    async function buscarConvidado() {
 
-      const token = new URLSearchParams(window.location.search).get("token");
+    async function confirmar() {
+
+      const botao = document.getElementById("botaoConfirmar");
+      const mensagem = document.getElementById("mensagem");
+      const titulo = document.getElementById("tituloMensagem");
+      const texto = document.getElementById("textoMensagem");
+
+      const token =
+        new URLSearchParams(window.location.search).get("token");
+
 
       if (!token) {
-        alert("Link de convite inválido.");
+
+        titulo.textContent = "Link inválido 💛";
+        texto.textContent =
+          "Este convite não possui um código de convidado.";
+
+        mensagem.style.display = "block";
+
         return;
       }
+
+
+      botao.disabled = true;
+      botao.textContent = "Verificando...";
+
 
       try {
 
@@ -164,29 +206,55 @@
           }
         );
 
+
         const dados = await resposta.json();
 
+
         if (!resposta.ok || !dados.length) {
-          alert("Convidado não encontrado.");
+
+          titulo.textContent = "Convidado não encontrado 💛";
+
+          texto.textContent =
+            "Verifique se o link do convite está correto.";
+
+          mensagem.style.display = "block";
+
+          botao.disabled = false;
+          botao.textContent = "Confirmar presença 💛";
+
           return;
         }
 
+
         const convidado = dados[0];
 
-        alert(
-          Olá, ${convidado.nome}! Você tem ${convidado.pulseiras} pulseira(s).
-        );
+
+        titulo.textContent =
+          Olá, ${convidado.nome}! 🌻;
+
+        texto.textContent =
+          Seu convite possui ${convidado.pulseiras} pulseira(s). Sua resposta foi encontrada com sucesso.;
+
+        mensagem.style.display = "block";
+
+
+        botao.textContent = "Convite encontrado ✓";
+
 
       } catch (erro) {
 
         console.error(erro);
 
-        alert("Não foi possível carregar seu convite.");
-      }
-    }
+        titulo.textContent = "Ops! 💛";
 
-    function confirmar() {
-      buscarConvidado();
+        texto.textContent =
+          "Não foi possível acessar o convite. Tente novamente.";
+
+        mensagem.style.display = "block";
+
+        botao.disabled = false;
+        botao.textContent = "Confirmar presença 💛";
+      }
     }
   </script>
 
