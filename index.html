@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -168,7 +167,6 @@
 
     .campo input:focus {
       border-color: #d9ad25;
-
       box-shadow:
         0 0 0 3px rgba(217, 173, 37, 0.15);
     }
@@ -256,12 +254,7 @@
 
   </main>
 
-
   <script>
-
-    // =====================================================
-    // SUPABASE
-    // =====================================================
 
     const SUPABASE_URL =
       "https://uagltrjwjmjcpkadnvfi.supabase.co";
@@ -269,17 +262,7 @@
     const SUPABASE_KEY =
       "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-";
 
-
-    // =====================================================
-    // VARIÁVEL DO CONVIDADO
-    // =====================================================
-
     let convidadoAtual = null;
-
-
-    // =====================================================
-    // FUNÇÃO PRINCIPAL
-    // =====================================================
 
     async function confirmar() {
 
@@ -295,12 +278,10 @@
       const texto =
         document.getElementById("textoMensagem");
 
-
       const token =
         new URLSearchParams(
           window.location.search
         ).get("token");
-
 
       if (!token) {
 
@@ -316,13 +297,11 @@
         return;
       }
 
-
       botao.disabled =
         true;
 
       botao.textContent =
         "Verificando...";
-
 
       try {
 
@@ -335,7 +314,8 @@
 
               headers: {
                 "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
               },
 
               body: JSON.stringify({
@@ -345,16 +325,13 @@
             }
           );
 
-
         const dados =
           await resposta.json();
-
 
         console.log(
           "Resposta do Supabase:",
           dados
         );
-
 
         if (
           !resposta.ok ||
@@ -378,28 +355,77 @@
             "Confirmar presença 💛";
 
           return;
-
         }
-
 
         convidadoAtual =
           dados[0];
 
-
         const pulseiras =
           Number(convidadoAtual.pulseiras) || 1;
-
 
         const quantidadeAcompanhantes =
           Math.max(0, pulseiras - 1);
 
+        if (
+          convidadoAtual.status &&
+          convidadoAtual.status !== "pendente"
+        ) {
+
+          if (
+            convidadoAtual.status === "confirmado"
+          ) {
+
+            titulo.textContent =
+              `Olá, ${convidadoAtual.nome}! 🌻`;
+
+            texto.innerHTML = `
+
+              <p class="sucesso">
+                Sua presença já foi confirmada! 💛
+              </p>
+
+              <br>
+
+              Sua resposta já foi registrada.
+
+            `;
+
+          } else {
+
+            titulo.textContent =
+              `Olá, ${convidadoAtual.nome}! 🌻`;
+
+            texto.innerHTML = `
+
+              <p>
+                Você informou que não poderá comparecer.
+              </p>
+
+              <br>
+
+              Sua resposta já foi registrada. 💛
+
+            `;
+
+          }
+
+          mensagem.style.display =
+            "block";
+
+          botao.textContent =
+            "Resposta registrada ✓";
+
+          return;
+        }
 
         let camposAcompanhantes = "";
 
+        const acompanhantePermitido =
+          convidadoAtual.acompanhante_permitido !== false;
 
         if (
           quantidadeAcompanhantes > 0 &&
-          convidadoAtual.acompanhante_permitido === true
+          acompanhantePermitido
         ) {
 
           camposAcompanhantes += `
@@ -411,7 +437,6 @@
               </h3>
 
           `;
-
 
           for (
             let i = 1;
@@ -440,10 +465,10 @@
 
           }
 
-
           camposAcompanhantes += `
 
               <button
+                type="button"
                 class="botao botaoFinal"
                 onclick="finalizarPresenca()"
               >
@@ -454,12 +479,12 @@
 
           `;
 
-
         } else {
 
           camposAcompanhantes = `
 
             <button
+              type="button"
               class="botao botaoFinal"
               onclick="finalizarPresenca()"
             >
@@ -470,10 +495,8 @@
 
         }
 
-
         titulo.textContent =
           `Olá, ${convidadoAtual.nome}! 🌻`;
-
 
         texto.innerHTML = `
 
@@ -491,14 +514,18 @@
           </strong>
 
           <button
+            type="button"
             class="botao opcao"
+            id="botaoSim"
             onclick="mostrarAcompanhantes()"
           >
             💛 Sim, vou!
           </button>
 
           <button
+            type="button"
             class="botao opcao"
+            id="botaoNao"
             onclick="naoVou()"
           >
             🤍 Não vou!
@@ -513,16 +540,13 @@
 
         `;
 
-
         mensagem.style.display =
           "block";
-
 
         botao.textContent =
           "Convite encontrado ✓";
 
       }
-
 
       catch (erro) {
 
@@ -530,7 +554,6 @@
           "Erro:",
           erro
         );
-
 
         titulo.textContent =
           "Ops! 💛";
@@ -551,11 +574,6 @@
 
     }
 
-
-    // =====================================================
-    // MOSTRAR CAMPOS DE ACOMPANHANTES
-    // =====================================================
-
     function mostrarAcompanhantes() {
 
       const area =
@@ -563,20 +581,32 @@
           "areaAcompanhantes"
         );
 
+      const botaoSim =
+        document.getElementById(
+          "botaoSim"
+        );
+
+      const botaoNao =
+        document.getElementById(
+          "botaoNao"
+        );
 
       if (area) {
-
         area.style.display =
           "block";
+      }
 
+      if (botaoSim) {
+        botaoSim.style.display =
+          "none";
+      }
+
+      if (botaoNao) {
+        botaoNao.style.display =
+          "none";
       }
 
     }
-
-
-    // =====================================================
-    // PESSOA NÃO VAI
-    // =====================================================
 
     async function naoVou() {
 
@@ -590,27 +620,27 @@
           "textoMensagem"
         );
 
+      const botao =
+        document.getElementById(
+          "botaoConfirmar"
+        );
+
+      const token =
+        new URLSearchParams(
+          window.location.search
+        ).get("token");
+
+      if (!token) {
+        return;
+      }
+
+      titulo.textContent =
+        "Registrando... 💛";
+
+      texto.textContent =
+        "Aguarde um instante.";
 
       try {
-
-        const token =
-          new URLSearchParams(
-            window.location.search
-          ).get("token");
-
-
-        if (!token) {
-          return;
-        }
-
-
-        titulo.textContent =
-          "Salvando... 💛";
-
-
-        texto.textContent =
-          "Aguarde um instante.";
-
 
         const resposta =
           await fetch(
@@ -621,39 +651,41 @@
 
               headers: {
                 "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
               },
 
               body: JSON.stringify({
+
                 p_token: token,
-                p_status: "recusado",
+
+                p_confirmado: false,
+
                 p_acompanhante_nome: null
+
               })
 
             }
           );
 
-
-        const resultado =
+        const dados =
           await resposta.json();
 
-
         console.log(
-          "Resultado da recusa:",
-          resultado
+          "Resposta ao recusar:",
+          dados
         );
 
-
         if (!resposta.ok) {
-          throw new Error(
-            "Não foi possível salvar."
-          );
-        }
 
+          throw new Error(
+            JSON.stringify(dados)
+          );
+
+        }
 
         titulo.textContent =
           "Tudo bem! 💛";
-
 
         texto.innerHTML = `
 
@@ -665,26 +697,33 @@
 
         `;
 
-      }
+        botao.textContent =
+          "Resposta registrada ✓";
 
+        botao.disabled =
+          true;
+
+      }
 
       catch (erro) {
 
         console.error(
-          "Erro ao salvar:",
+          "Erro ao registrar recusa:",
           erro
         );
-
 
         titulo.textContent =
           "Ops! 💛";
 
-
         texto.innerHTML = `
 
           <p>
-            Não conseguimos registrar sua resposta.
-            <br>
+            Não conseguimos salvar sua resposta.
+          </p>
+
+          <br>
+
+          <p>
             Tente novamente.
           </p>
 
@@ -693,11 +732,6 @@
       }
 
     }
-
-
-    // =====================================================
-    // FINALIZAR PRESENÇA
-    // =====================================================
 
     async function finalizarPresenca() {
 
@@ -711,112 +745,69 @@
           "textoMensagem"
         );
 
-
-      if (!convidadoAtual) {
-
-        alert(
-          "Convidado não encontrado."
-        );
-
-        return;
-
-      }
-
-
       const token =
         new URLSearchParams(
           window.location.search
         ).get("token");
 
-
       if (!token) {
-
-        alert(
-          "Token do convite não encontrado."
-        );
-
         return;
-
       }
-
 
       const pulseiras =
         Number(convidadoAtual.pulseiras) || 1;
 
-
       const quantidadeAcompanhantes =
         Math.max(0, pulseiras - 1);
 
-
       const acompanhantes = [];
 
-
-      if (
-        quantidadeAcompanhantes > 0 &&
-        convidadoAtual.acompanhante_permitido === true
+      for (
+        let i = 1;
+        i <= quantidadeAcompanhantes;
+        i++
       ) {
 
-        for (
-          let i = 1;
-          i <= quantidadeAcompanhantes;
-          i++
-        ) {
-
-          const campo =
-            document.getElementById(
-              `acompanhante${i}`
-            );
-
-
-          if (!campo) {
-            continue;
-          }
-
-
-          const nome =
-            campo.value.trim();
-
-
-          if (!nome) {
-
-            campo.focus();
-
-
-            alert(
-              `Digite o nome do acompanhante ${i}.`
-            );
-
-
-            return;
-
-          }
-
-
-          acompanhantes.push(
-            nome
+        const campo =
+          document.getElementById(
+            `acompanhante${i}`
           );
+
+        if (!campo) {
+          continue;
+        }
+
+        const nome =
+          campo.value.trim();
+
+        if (!nome) {
+
+          campo.focus();
+
+          alert(
+            `Digite o nome do acompanhante ${i}.`
+          );
+
+          return;
 
         }
 
-      }
+        acompanhantes.push(
+          nome
+        );
 
+      }
 
       const nomesAcompanhantes =
         acompanhantes.length > 0
           ? acompanhantes.join(", ")
           : null;
 
-
       titulo.textContent =
-        "Salvando sua confirmação... 💛";
+        "Registrando presença... 💛";
 
-
-      texto.innerHTML = `
-        <p>
-          Aguarde um instante...
-        </p>
-      `;
-
+      texto.textContent =
+        "Aguarde um instante.";
 
       try {
 
@@ -829,14 +820,15 @@
 
               headers: {
                 "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
               },
 
               body: JSON.stringify({
 
                 p_token: token,
 
-                p_status: "confirmado",
+                p_confirmado: true,
 
                 p_acompanhante_nome:
                   nomesAcompanhantes
@@ -846,37 +838,27 @@
             }
           );
 
-
-        const resultado =
+        const dados =
           await resposta.json();
 
-
         console.log(
-          "Resultado da confirmação:",
-          resultado
+          "Resposta da confirmação:",
+          dados
         );
 
-
-        if (
-          !resposta.ok ||
-          !resultado ||
-          resultado.sucesso !== true
-        ) {
+        if (!resposta.ok) {
 
           throw new Error(
-            "Não foi possível salvar a confirmação."
+            JSON.stringify(dados)
           );
 
         }
 
-
         titulo.textContent =
           "Presença confirmada! 🌻";
 
-
         let mensagemAcompanhantes =
           "";
-
 
         if (
           acompanhantes.length > 0
@@ -893,13 +875,14 @@
             <br>
 
             ${acompanhantes
-              .map(nome => `👤 ${nome}`)
+              .map(
+                nome => `👤 ${nome}`
+              )
               .join("<br>")}
 
           `;
 
         }
-
 
         texto.innerHTML = `
 
@@ -922,8 +905,18 @@
 
         `;
 
-      }
+        const botao =
+          document.getElementById(
+            "botaoConfirmar"
+          );
 
+        botao.textContent =
+          "Presença confirmada ✓";
+
+        botao.disabled =
+          true;
+
+      }
 
       catch (erro) {
 
@@ -932,16 +925,18 @@
           erro
         );
 
-
         titulo.textContent =
           "Ops! 💛";
-
 
         texto.innerHTML = `
 
           <p>
             Não conseguimos salvar sua confirmação.
-            <br><br>
+          </p>
+
+          <br>
+
+          <p>
             Tente novamente.
           </p>
 
@@ -956,4 +951,3 @@
 </body>
 
 </html>
-```
