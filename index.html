@@ -290,16 +290,25 @@
           dados[0];
 
 
-        titulo.textContent =
-          `Olá, ${convidado.nome}! 🌻`;
+       titulo.textContent =
+  Olá, ${convidado.nome}! 🌻;
 
+texto.innerHTML = `
+  Seu convite possui <strong>${convidado.pulseiras} pulseira(s)</strong>.<br><br>
 
-        texto.textContent =
-          `Seu convite possui ${convidado.pulseiras} pulseira(s). Sua resposta foi encontrada com sucesso.`;
+  <strong>Você irá à festa?</strong><br><br>
 
+  <button class="botao" onclick="responder(true)">
+    💛 Sim, vou!
+  </button>
 
-        mensagem.style.display =
-          "block";
+  <button class="botao" onclick="responder(false)">
+    🤍 Não vou!
+  </button>
+`;
+
+mensagem.style.display =
+  "block";
 
 
         botao.textContent =
