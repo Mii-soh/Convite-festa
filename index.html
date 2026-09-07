@@ -129,10 +129,56 @@
   </main>
 
   <script>
-    function confirmar() {
-      alert("A confirmação de presença será liberada em breve! 💛");
+  const SUPABASE_URL = "https://uagltrjwjmjcpkadnvfi.supabase.co";
+
+  async function buscarConvidado() {
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    if (!token) {
+      alert("Link de convite inválido.");
+      return;
     }
-  </script>
+
+    try {
+      const resposta = await fetch(
+        ${SUPABASE_URL}/rest/v1/rpc/buscar_convidado,
+        {
+          method: "POST",
+          headers: {
+            headers: {
+  "Content-Type": "application/json",
+  "apikey": "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-"
+}
+          },
+          body: JSON.stringify({
+            p_token: token
+          })
+        }
+      );
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok || !dados.length) {
+        alert("Convidado não encontrado.");
+        return;
+      }
+
+      const convidado = dados[0];
+
+      alert(
+        Olá, ${convidado.nome}! Você tem ${convidado.pulseiras} pulseira(s).
+      );
+
+    } catch (erro) {
+      console.error(erro);
+      alert("Não foi possível carregar seu convite.");
+    }
+  }
+
+  function confirmar() {
+    buscarConvidado();
+  }
+</script>
 
 </body>
 </html>
