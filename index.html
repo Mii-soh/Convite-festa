@@ -190,55 +190,50 @@
 
       try {
 
-        const resposta = await fetch(
-          ${SUPABASE_URL}/rest/v1/rpc/buscar_convidado,
-          {
-            method: "POST",
+     const resposta = await fetch(
+  `${SUPABASE_URL}/rest/v1/rpc/buscar_convidado`,
+  {
+    method: "POST",
 
-            headers: {
-              "Content-Type": "application/json",
-              "apikey": SUPABASE_KEY
-            },
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY
+    },
 
-            body: JSON.stringify({
-              p_token: token
-            })
-          }
-        );
+    body: JSON.stringify({
+      p_token: token
+    })
+  }
+);
 
+const dados = await resposta.json();
 
-        const dados = await resposta.json();
+if (!resposta.ok || !dados.length) {
 
+  titulo.textContent = "Convidado não encontrado 💛";
 
-        if (!resposta.ok || !dados.length) {
+  texto.textContent =
+    "Verifique se o link do convite está correto.";
 
-          titulo.textContent = "Convidado não encontrado 💛";
+  mensagem.style.display = "block";
 
-          texto.textContent =
-            "Verifique se o link do convite está correto.";
+  botao.disabled = false;
+  botao.textContent = "Confirmar presença 💛";
 
-          mensagem.style.display = "block";
+  return;
+}
 
-          botao.disabled = false;
-          botao.textContent = "Confirmar presença 💛";
+const convidado = dados[0];
 
-          return;
-        }
+titulo.textContent =
+  `Olá, ${convidado.nome}! 🌻`;
 
+texto.textContent =
+  `Seu convite possui ${convidado.pulseiras} pulseira(s). Sua resposta foi encontrada com sucesso.`;
 
-        const convidado = dados[0];
+mensagem.style.display = "block";
 
-
-        titulo.textContent =
-          Olá, ${convidado.nome}! 🌻;
-
-        texto.textContent =
-          Seu convite possui ${convidado.pulseiras} pulseira(s). Sua resposta foi encontrada com sucesso.;
-
-        mensagem.style.display = "block";
-
-
-        botao.textContent = "Convite encontrado ✓";
+botao.textContent = "Convite encontrado ✓";
 
 
       } catch (erro) {
