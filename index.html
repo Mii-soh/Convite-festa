@@ -113,8 +113,10 @@
       margin-bottom: 10px;
     }
 
-    .erro {
-      color: #9b5b00;
+    .opcao {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -198,6 +200,51 @@
       "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-";
 
 
+    // =========================
+    // MOSTRAR RESPOSTA
+    // =========================
+
+    function responder(vai) {
+
+      const mensagem =
+        document.getElementById("mensagem");
+
+      const titulo =
+        document.getElementById("tituloMensagem");
+
+      const texto =
+        document.getElementById("textoMensagem");
+
+
+      if (vai) {
+
+        titulo.textContent =
+          "Que bom! 🌻";
+
+        texto.textContent =
+          "Sua presença foi confirmada! 💛";
+
+      } else {
+
+        titulo.textContent =
+          "Tudo bem! 💛";
+
+        texto.textContent =
+          "Sua resposta foi registrada.";
+
+      }
+
+
+      mensagem.style.display =
+        "block";
+
+    }
+
+
+    // =========================
+    // BUSCAR CONVIDADO
+    // =========================
+
     async function confirmar() {
 
       const botao =
@@ -213,11 +260,16 @@
         document.getElementById("textoMensagem");
 
 
+      // Pega o token da URL
       const token =
         new URLSearchParams(
           window.location.search
         ).get("token");
 
+
+      // =========================
+      // VERIFICA SE EXISTE TOKEN
+      // =========================
 
       if (!token) {
 
@@ -243,6 +295,10 @@
 
       try {
 
+        // =========================
+        // CONSULTA O SUPABASE
+        // =========================
+
         const resposta =
           await fetch(
             `${SUPABASE_URL}/rest/v1/rpc/buscar_convidado`,
@@ -265,7 +321,21 @@
           await resposta.json();
 
 
-        if (!resposta.ok || !dados.length) {
+        console.log(
+          "Resposta do Supabase:",
+          dados
+        );
+
+
+        // =========================
+        // CONVIDADO NÃO ENCONTRADO
+        // =========================
+
+        if (
+          !resposta.ok ||
+          !Array.isArray(dados) ||
+          dados.length === 0
+        ) {
 
           titulo.textContent =
             "Convidado não encontrado 💛";
@@ -286,29 +356,44 @@
         }
 
 
+        // =========================
+        // CONVIDADO ENCONTRADO
+        // =========================
+
         const convidado =
           dados[0];
 
 
-       titulo.textContent =
-  Olá, ${convidado.nome}! 🌻;
+        titulo.textContent =
+          `Olá, ${convidado.nome}! 🌻`;
 
-texto.innerHTML = `
-  Seu convite possui <strong>${convidado.pulseiras} pulseira(s)</strong>.<br><br>
 
-  <strong>Você irá à festa?</strong><br><br>
+        texto.innerHTML = `
+          Seu convite possui
+          <strong>${convidado.pulseiras} pulseira(s)</strong>.
 
-  <button class="botao" onclick="responder(true)">
-    💛 Sim, vou!
-  </button>
+          <br><br>
 
-  <button class="botao" onclick="responder(false)">
-    🤍 Não vou!
-  </button>
-`;
+          <strong>Você irá à festa?</strong>
 
-mensagem.style.display =
-  "block";
+          <button
+            class="botao opcao"
+            onclick="responder(true)"
+          >
+            💛 Sim, vou!
+          </button>
+
+          <button
+            class="botao opcao"
+            onclick="responder(false)"
+          >
+            🤍 Não vou!
+          </button>
+        `;
+
+
+        mensagem.style.display =
+          "block";
 
 
         botao.textContent =
@@ -317,9 +402,16 @@ mensagem.style.display =
       }
 
 
+      // =========================
+      // ERRO
+      // =========================
+
       catch (erro) {
 
-        console.error(erro);
+        console.error(
+          "Erro:",
+          erro
+        );
 
 
         titulo.textContent =
