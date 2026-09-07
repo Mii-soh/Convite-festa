@@ -102,7 +102,9 @@
 
     <div class="flores">🌻 🌼 🌻</div>
 
-    <p class="subtitulo">Você está convidado(a) para comemorar</p>
+    <p class="subtitulo">
+      Você está convidado(a) para comemorar
+    </p>
 
     <h1>Meu aniversário</h1>
 
@@ -111,10 +113,12 @@
     <div class="info">
       <strong>18 de outubro de 2026</strong><br>
       A partir das <strong>09:00</strong>
-      
+
       <div class="local">
         📍 <strong>Chã do Camará</strong><br>
-        <small>A localização será enviada pelo WhatsApp.</small>
+        <small>
+          A localização será enviada pelo WhatsApp.
+        </small>
       </div>
     </div>
 
@@ -129,56 +133,62 @@
   </main>
 
   <script>
-  const SUPABASE_URL = "https://uagltrjwjmjcpkadnvfi.supabase.co";
+    const SUPABASE_URL = "https://uagltrjwjmjcpkadnvfi.supabase.co";
 
-  async function buscarConvidado() {
-    const token = new URLSearchParams(window.location.search).get("token");
+    const SUPABASE_KEY = "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-";
 
-    if (!token) {
-      alert("Link de convite inválido.");
-      return;
-    }
+    async function buscarConvidado() {
 
-    try {
-      const resposta = await fetch(
-        ${SUPABASE_URL}/rest/v1/rpc/buscar_convidado,
-        {
-          method: "POST",
-          headers: {
-            headers: {
-  "Content-Type": "application/json",
-  "apikey": "sb_publishable_ljFBfYwoZwGPF3bQQ48KUQ_i_hAQnX-"
-}
-          },
-          body: JSON.stringify({
-            p_token: token
-          })
-        }
-      );
+      const token = new URLSearchParams(window.location.search).get("token");
 
-      const dados = await resposta.json();
-
-      if (!resposta.ok || !dados.length) {
-        alert("Convidado não encontrado.");
+      if (!token) {
+        alert("Link de convite inválido.");
         return;
       }
 
-      const convidado = dados[0];
+      try {
 
-      alert(
-        Olá, ${convidado.nome}! Você tem ${convidado.pulseiras} pulseira(s).
-      );
+        const resposta = await fetch(
+          ${SUPABASE_URL}/rest/v1/rpc/buscar_convidado,
+          {
+            method: "POST",
 
-    } catch (erro) {
-      console.error(erro);
-      alert("Não foi possível carregar seu convite.");
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_KEY
+            },
+
+            body: JSON.stringify({
+              p_token: token
+            })
+          }
+        );
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok || !dados.length) {
+          alert("Convidado não encontrado.");
+          return;
+        }
+
+        const convidado = dados[0];
+
+        alert(
+          Olá, ${convidado.nome}! Você tem ${convidado.pulseiras} pulseira(s).
+        );
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível carregar seu convite.");
+      }
     }
-  }
 
-  function confirmar() {
-    buscarConvidado();
-  }
-</script>
+    function confirmar() {
+      buscarConvidado();
+    }
+  </script>
 
 </body>
 </html>
