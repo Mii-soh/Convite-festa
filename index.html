@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Meu aniversário 💛</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      background: #fff9df;
+      color: #5f4b18;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+    }
+
+    .convite {
+      width: 100%;
+      max-width: 520px;
+      background: #fffdf3;
+      border-radius: 25px;
+      padding: 40px 25px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(100, 80, 20, 0.15);
+      border: 2px solid #f2d36b;
+    }
+
+    .flores {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 42px;
+      color: #c79b18;
+      margin-bottom: 8px;
+    }
+
+    .subtitulo {
+      font-size: 21px;
+      margin-bottom: 25px;
+    }
+
+    .numero {
+      font-size: 70px;
+      font-weight: bold;
+      color: #d6aa1e;
+      margin: 10px 0;
+    }
+
+    .info {
+      font-size: 18px;
+      line-height: 1.8;
+      margin: 25px 0;
+    }
+
+    .local {
+      margin-top: 15px;
+    }
+
+    .botao {
+      display: inline-block;
+      border: none;
+      background: #d9ad25;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 30px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 15px;
+      transition: 0.2s;
+    }
+
+    .botao:hover {
+      transform: scale(1.03);
+      background: #c49a19;
+    }
+
+    .rodape {
+      margin-top: 25px;
+      font-size: 14px;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="convite">
+
+    <div class="flores">🌻 🌼 🌻</div>
+
+    <p class="subtitulo">Você está convidado(a) para comemorar</p>
+
+    <h1>Meu aniversário</h1>
+
+    <div class="numero">19</div>
+
+    <div class="info">
+      <strong>18 de outubro de 2026</strong><br>
+      A partir das <strong>09:00</strong>
+      
+      <div class="local">
+        📍 <strong>Chã do Camará</strong><br>
+        <small>A localização será enviada pelo WhatsApp.</small>
+      </div>
+    </div>
+
+    <button class="botao" onclick="confirmar()">
+      Confirmar presença 💛
+    </button>
+
+    <p class="rodape">
+      Será um dia muito especial e quero você comigo! 🌻
+    </p>
+
+  </main>
+
+  <script>
+    function confirmar() {
+      alert("A confirmação de presença será liberada em breve! 💛");
+    }
+  </script>
+
+</body>
+</html>
